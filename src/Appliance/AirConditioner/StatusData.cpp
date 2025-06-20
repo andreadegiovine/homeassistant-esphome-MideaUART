@@ -96,7 +96,7 @@ void StatusData::setPreset(Preset preset) {
   }
 }
 
-static uint8_t bcd2u8(uint8_t bcd) { return 10 * (bcd >> 4) + (bcd & 15); }
+//static uint8_t bcd2u8(uint8_t bcd) { return 10 * (bcd >> 4) + (bcd & 15); }
 
 //float StatusData::getPowerUsage() const {
 //  uint32_t power = 0;
