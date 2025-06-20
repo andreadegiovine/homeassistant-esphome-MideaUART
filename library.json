@@ -6,7 +6,7 @@
   "repository":
   {
     "type": "git",
-    "url": "https://github.com/dudanov/MideaUART.git"
+    "url": "https://github.com/andreadegiovine/homeassistant-esphome-MideaUART"
   },
   "authors":
   [
