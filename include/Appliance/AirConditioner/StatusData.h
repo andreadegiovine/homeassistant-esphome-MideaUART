@@ -105,7 +105,7 @@ class StatusData : public FrameData {
   void setPreset(Preset preset);
 
   /* POWER USAGE */
-  float getPowerUsage() const;
+//  float getPowerUsage() const;
 
   void setBeeper(bool state) {
     this->m_setMask(1, true, 2);
