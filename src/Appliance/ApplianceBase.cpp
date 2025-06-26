@@ -58,9 +58,17 @@ void ApplianceBase::loop() {
   // Loop for appliances
   m_loop();
   // Frame receiving
+  uint32_t start_time = millis();
   while (this->m_receiver.read(this->m_stream)) {
+    // Timeout 10s
+    if (millis() - start_time > 10000) {
+      LOG_W(TAG, "Receiving timeout...");
+      this->m_receiver.clear();
+      break;
+    }
+
     this->m_protocol = this->m_receiver.getProtocol();
-    LOG_D(TAG, "RX: %s", this->m_receiver.toString().c_str());
+    LOG_D(TAG, "RX2: %s", this->m_receiver.toString().c_str());
     this->m_handler(this->m_receiver);
     this->m_receiver.clear();
   }
