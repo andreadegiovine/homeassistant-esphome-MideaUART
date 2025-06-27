@@ -57,6 +57,7 @@ void ApplianceBase::loop() {
   m_timerManager.task();
   // Loop for appliances
   m_loop();
+
   // Frame receiving
   uint32_t start_time = millis();
   while (this->m_receiver.read(this->m_stream)) {
@@ -68,7 +69,7 @@ void ApplianceBase::loop() {
     }
 
     this->m_protocol = this->m_receiver.getProtocol();
-    LOG_D(TAG, "RX2: %s", this->m_receiver.toString().c_str());
+    LOG_D(TAG, "RX: %s", this->m_receiver.toString().c_str());
     this->m_handler(this->m_receiver);
     this->m_receiver.clear();
   }
@@ -81,7 +82,17 @@ void ApplianceBase::loop() {
   this->m_request = this->m_queue.front();
   this->m_queue.pop_front();
   LOG_D(TAG, "Getting and sending a request from the queue...");
-  this->m_sendRequest(this->m_request);
+
+  try {
+    this->m_sendRequest(this->m_request);
+  } catch (const std::exception& e) {
+    LOG_D(TAG, "Errore richiesta: %s", e.what());
+    this->m_destroyRequest();
+  } catch (...) {
+    LOG_D(TAG, "Errore richiesta generico");
+    this->m_destroyRequest();
+  }
+
   if (this->m_request->onData != nullptr) {
     this->m_resetAttempts();
     this->m_resetTimeout();
