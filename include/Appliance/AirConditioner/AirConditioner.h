@@ -31,7 +31,7 @@ class AirConditioner : public ApplianceBase {
   float getIndoorTemp() const { return this->m_indoorTemp; }
   float getOutdoorTemp() const { return this->m_outdoorTemp; }
   float getIndoorHum() const { return this->m_indoorHumidity; }
-//  float getPowerUsage() const { return this->m_powerUsage; }
+  float getPowerUsage() const { return this->m_powerUsage; }
   Mode getMode() const { return this->m_mode; }
   SwingMode getSwingMode() const { return this->m_swingMode; }
   FanMode getFanMode() const { return this->m_fanMode; }
@@ -39,7 +39,7 @@ class AirConditioner : public ApplianceBase {
   const Capabilities &getCapabilities() const { return this->m_capabilities; }
   void displayToggle() { this->m_displayToggle(); }
  protected:
-//  void m_getPowerUsage();
+  void m_getPowerUsage();
   void m_getCapabilities();
   void m_getStatus();
   void m_setStatus(StatusData status);
