@@ -20,7 +20,12 @@ ResponseStatus ApplianceBase::Request::callHandler(const Frame &frame) {
 }
 
 bool ApplianceBase::FrameReceiver::read(Stream *stream) {
+  unsigned long startTime = millis();
   while (stream->available()) {
+    if (millis() - startTime > 500) { // Timeout di 500ms
+      LOG_D(TAG, "Timeout waiting for RX response!");
+      return false; // Esci dalla funzione per evitare il blocco
+    }
     const uint8_t data = stream->read();
     const uint8_t length = this->m_data.size();
     if (length == OFFSET_START && data != START_BYTE)
@@ -57,19 +62,10 @@ void ApplianceBase::loop() {
   m_timerManager.task();
   // Loop for appliances
   m_loop();
-
   // Frame receiving
-  uint32_t start_time = millis();
   while (this->m_receiver.read(this->m_stream)) {
-    // Timeout 10s
-    if (millis() - start_time > 10000) {
-      LOG_W(TAG, "Receiving timeout...");
-      this->m_receiver.clear();
-      break;
-    }
-
     this->m_protocol = this->m_receiver.getProtocol();
-    LOG_D(TAG, "RX: %s", this->m_receiver.toString().c_str());
+    LOG_D(TAG, "CUSTOM - RX: %s", this->m_receiver.toString().c_str());
     this->m_handler(this->m_receiver);
     this->m_receiver.clear();
   }
@@ -82,17 +78,7 @@ void ApplianceBase::loop() {
   this->m_request = this->m_queue.front();
   this->m_queue.pop_front();
   LOG_D(TAG, "Getting and sending a request from the queue...");
-
-  try {
-    this->m_sendRequest(this->m_request);
-  } catch (const std::exception& e) {
-    LOG_D(TAG, "Errore richiesta: %s", e.what());
-    this->m_destroyRequest();
-  } catch (...) {
-    LOG_D(TAG, "Errore richiesta generico");
-    this->m_destroyRequest();
-  }
-
+  this->m_sendRequest(this->m_request);
   if (this->m_request->onData != nullptr) {
     this->m_resetAttempts();
     this->m_resetTimeout();
@@ -178,7 +164,7 @@ void ApplianceBase::m_destroyRequest() {
 
 void ApplianceBase::m_sendFrame(FrameType type, const FrameData &data) {
   Frame frame(this->m_appType, this->m_protocol, type, data);
-  LOG_D(TAG, "TX: %s", frame.toString().c_str());
+  LOG_D(TAG, "CUSTOM - TX: %s", frame.toString().c_str());
   this->m_stream->write(frame.data(), frame.size());
   this->m_isBusy = true;
   this->m_periodTimer.setCallback([this](Timer *timer) {
