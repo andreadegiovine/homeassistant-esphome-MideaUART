@@ -11,12 +11,12 @@ static const char *TAG = "AirConditioner";
 void AirConditioner::m_setup() {
   if (this->m_autoconfStatus != AUTOCONF_DISABLED)
     this->m_getCapabilities();
-//  this->m_timerManager.registerTimer(this->m_powerUsageTimer);
-//  this->m_powerUsageTimer.setCallback([this](Timer *timer) {
-//    timer->reset();
-//    this->m_getPowerUsage();
-//  });
-//  this->m_powerUsageTimer.start(30000);
+  this->m_timerManager.registerTimer(this->m_powerUsageTimer);
+  this->m_powerUsageTimer.setCallback([this](Timer *timer) {
+    timer->reset();
+    this->m_getPowerUsage();
+  });
+  this->m_powerUsageTimer.start(30000);
 }
 
 static bool checkConstraints(const Mode &mode, const Preset &preset) {
@@ -126,23 +126,23 @@ void AirConditioner::setPowerState(bool state) {
   }
 }
 
-//void AirConditioner::m_getPowerUsage() {
-//  QueryPowerData data{};
-//  LOG_D(TAG, "Enqueuing a GET_POWERUSAGE(0x41) request...");
-//  this->m_queueRequest(FrameType::DEVICE_QUERY, std::move(data),
-//    // onData
-//    [this](FrameData data) -> ResponseStatus {
-//      const auto status = data.to<StatusData>();
-//      if (!status.hasPowerInfo())
-//        return ResponseStatus::RESPONSE_WRONG;
-//      if (this->m_powerUsage != status.getPowerUsage()) {
-//        this->m_powerUsage = status.getPowerUsage();
-//        this->sendUpdate();
-//      }
-//      return ResponseStatus::RESPONSE_OK;
-//    }
-//  );
-//}
+void AirConditioner::m_getPowerUsage() {
+  QueryPowerData data{};
+  LOG_D(TAG, "Enqueuing a GET_POWERUSAGE(0x41) request...");
+  this->m_queueRequest(FrameType::DEVICE_QUERY, std::move(data),
+    // onData
+    [this](FrameData data) -> ResponseStatus {
+      const auto status = data.to<StatusData>();
+      if (!status.hasPowerInfo())
+        return ResponseStatus::RESPONSE_WRONG;
+      if (this->m_powerUsage != status.getPowerUsage()) {
+        this->m_powerUsage = status.getPowerUsage();
+        this->sendUpdate();
+      }
+      return ResponseStatus::RESPONSE_OK;
+    }
+  );
+}
 
 void AirConditioner::m_getCapabilities() {
   GetCapabilitiesData data{};
