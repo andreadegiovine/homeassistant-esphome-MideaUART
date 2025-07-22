@@ -56,10 +56,8 @@ void ApplianceBase::loop() {
   LOG_W(TAG, "loop");
   // Timers task
   m_timerManager.task();
-  LOG_W(TAG, "m_timerManager");
   // Loop for appliances
   m_loop();
-  LOG_W(TAG, "m_loop");
   // Frame receiving
   while (this->m_receiver.read(this->m_stream)) {
     this->m_protocol = this->m_receiver.getProtocol();
@@ -67,7 +65,6 @@ void ApplianceBase::loop() {
     this->m_handler(this->m_receiver);
     this->m_receiver.clear();
   }
-  LOG_W(TAG, "while");
   if (this->m_isBusy || this->m_isWaitForResponse())
     LOG_W(TAG, "m_isBusy");
     return;
