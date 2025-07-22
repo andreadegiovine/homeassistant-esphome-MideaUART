@@ -160,18 +160,7 @@ void ApplianceBase::m_destroyRequest() {
 void ApplianceBase::m_sendFrame(FrameType type, const FrameData &data) {
   Frame frame(this->m_appType, this->m_protocol, type, data);
   LOG_D(TAG, "TX6: %s", frame.toString().c_str());
-
-  // MODIFICA INIZIA QUI
-  // Invece di scrivere l'intero blocco di dati in una sola volta,
-  // lo scriviamo un byte alla volta, chiamando yield() per evitare il watchdog.
-  const uint8_t *frame_data = frame.data();
-  size_t frame_size = frame.size();
-  for (size_t i = 0; i < frame_size; i++) {
-    this->m_stream->write(frame_data[i]);
-    yield(); // Permette al sistema di eseguire altre attività e resettare il watchdog
-  }
-  // MODIFICA FINISCE QUI
-
+  this->m_stream->write(frame.data(), frame.size());
   this->m_isBusy = true;
   this->m_periodTimer.setCallback([this](Timer *timer) {
     this->m_isBusy = false;
