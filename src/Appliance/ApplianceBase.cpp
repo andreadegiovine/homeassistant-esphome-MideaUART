@@ -65,10 +65,8 @@ void ApplianceBase::loop() {
     this->m_receiver.clear();
   }
   if (this->m_isBusy || this->m_isWaitForResponse())
-    LOG_D(TAG, "m_isBusy");
     return;
   if (this->m_queue.empty()) {
-    LOG_D(TAG, "empty");
     this->m_onIdle();
     return;
   }
@@ -163,16 +161,12 @@ void ApplianceBase::m_sendFrame(FrameType type, const FrameData &data) {
   Frame frame(this->m_appType, this->m_protocol, type, data);
   LOG_D(TAG, "TX5: %s", frame.toString().c_str());
   this->m_stream->write(frame.data(), frame.size());
-  LOG_D(TAG, "After write");
   this->m_isBusy = true;
   this->m_periodTimer.setCallback([this](Timer *timer) {
-    LOG_D(TAG, "Inside setCallback");
     this->m_isBusy = false;
     timer->stop();
   });
-  LOG_D(TAG, "After setCallback");
   this->m_periodTimer.start(this->m_period);
-  LOG_D(TAG, "End");
 }
 
 void ApplianceBase::m_queueRequest(FrameType type, FrameData data, ResponseHandler onData, Handler onSuccess, Handler onError) {

@@ -152,7 +152,7 @@ class ApplianceBase {
   // Waiting response timeout
   uint32_t m_timeout{2000};
   // Number of request attempts
-  uint8_t m_numAttempts{3};
+  uint8_t m_numAttempts{1}; // 3
 };
 
 }  // namespace midea
