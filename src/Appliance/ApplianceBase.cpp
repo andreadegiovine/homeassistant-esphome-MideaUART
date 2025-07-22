@@ -76,6 +76,7 @@ void ApplianceBase::loop() {
   this->m_queue.pop_front();
   LOG_D(TAG, "Getting and sending a request from the queue...");
   this->m_sendRequest(this->m_request);
+  LOG_W(TAG, "m_sendRequest");
   if (this->m_request->onData != nullptr) {
     LOG_W(TAG, "Case 1");
     this->m_resetAttempts();
