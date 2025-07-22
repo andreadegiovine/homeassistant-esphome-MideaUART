@@ -58,28 +58,22 @@ void ApplianceBase::loop() {
   // Loop for appliances
   m_loop();
   // Frame receiving
-  LOG_W(TAG, "while");
   while (this->m_receiver.read(this->m_stream)) {
     this->m_protocol = this->m_receiver.getProtocol();
     LOG_D(TAG, "RX4: %s", this->m_receiver.toString().c_str());
     this->m_handler(this->m_receiver);
     this->m_receiver.clear();
   }
-  LOG_W(TAG, "end while");
   if (this->m_isBusy || this->m_isWaitForResponse())
-    LOG_W(TAG, "m_isBusy");
     return;
   if (this->m_queue.empty()) {
-    LOG_W(TAG, "empty");
     this->m_onIdle();
-    LOG_W(TAG, "m_onIdle");
     return;
   }
   this->m_request = this->m_queue.front();
   this->m_queue.pop_front();
   LOG_D(TAG, "Getting and sending a request from the queue...");
   this->m_sendRequest(this->m_request);
-  LOG_W(TAG, "m_sendRequest");
   if (this->m_request->onData != nullptr) {
     LOG_W(TAG, "Case 1");
     this->m_resetAttempts();
