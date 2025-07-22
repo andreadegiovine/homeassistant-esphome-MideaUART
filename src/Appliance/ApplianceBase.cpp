@@ -20,13 +20,7 @@ ResponseStatus ApplianceBase::Request::callHandler(const Frame &frame) {
 }
 
 bool ApplianceBase::FrameReceiver::read(Stream *stream) {
-  unsigned long startTime = millis();
   while (stream->available()) {
-    if (millis() - startTime > 500) { // Timeout di 500ms
-      LOG_W(TAG, "Timeout 2 waiting for RX response!");
-      this->m_data.clear();
-      return false; // Esci dalla funzione per evitare il blocco
-    }
     const uint8_t data = stream->read();
     const uint8_t length = this->m_data.size();
     if (length == OFFSET_START && data != START_BYTE)
@@ -64,15 +58,9 @@ void ApplianceBase::loop() {
   // Loop for appliances
   m_loop();
   // Frame receiving
-  unsigned long startTime = millis();
   while (this->m_receiver.read(this->m_stream)) {
-    if (millis() - startTime > 500) { // Timeout di 500ms
-        LOG_W(TAG, "Timeout waiting for RX response!");
-        this->m_receiver.clear();
-        return; // Esci dalla funzione per evitare il blocco
-    }
     this->m_protocol = this->m_receiver.getProtocol();
-    LOG_D(TAG, "RX3: %s", this->m_receiver.toString().c_str());
+    LOG_D(TAG, "RX4: %s", this->m_receiver.toString().c_str());
     this->m_handler(this->m_receiver);
     this->m_receiver.clear();
   }
@@ -171,14 +159,18 @@ void ApplianceBase::m_destroyRequest() {
 
 void ApplianceBase::m_sendFrame(FrameType type, const FrameData &data) {
   Frame frame(this->m_appType, this->m_protocol, type, data);
-  LOG_D(TAG, "TX3: %s", frame.toString().c_str());
+  LOG_D(TAG, "TX4: %s", frame.toString().c_str());
   this->m_stream->write(frame.data(), frame.size());
+  LOG_W(TAG, "After write");
   this->m_isBusy = true;
   this->m_periodTimer.setCallback([this](Timer *timer) {
+    LOG_W(TAG, "Inside setCallback");
     this->m_isBusy = false;
     timer->stop();
   });
+  LOG_W(TAG, "After setCallback");
   this->m_periodTimer.start(this->m_period);
+  LOG_W(TAG, "End");
 }
 
 void ApplianceBase::m_queueRequest(FrameType type, FrameData data, ResponseHandler onData, Handler onSuccess, Handler onError) {
