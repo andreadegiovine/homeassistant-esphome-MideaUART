@@ -53,7 +53,6 @@ void ApplianceBase::setup() {
 }
 
 void ApplianceBase::loop() {
-  LOG_W(TAG, "loop");
   // Timers task
   m_timerManager.task();
   // Loop for appliances
