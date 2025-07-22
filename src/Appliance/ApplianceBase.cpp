@@ -53,10 +53,13 @@ void ApplianceBase::setup() {
 }
 
 void ApplianceBase::loop() {
+  LOG_W(TAG, "loop");
   // Timers task
   m_timerManager.task();
+  LOG_W(TAG, "m_timerManager");
   // Loop for appliances
   m_loop();
+  LOG_W(TAG, "m_loop");
   // Frame receiving
   while (this->m_receiver.read(this->m_stream)) {
     this->m_protocol = this->m_receiver.getProtocol();
@@ -64,21 +67,32 @@ void ApplianceBase::loop() {
     this->m_handler(this->m_receiver);
     this->m_receiver.clear();
   }
+  LOG_W(TAG, "while");
   if (this->m_isBusy || this->m_isWaitForResponse())
+    LOG_W(TAG, "m_isBusy");
     return;
   if (this->m_queue.empty()) {
+    LOG_W(TAG, "empty");
     this->m_onIdle();
+    LOG_W(TAG, "m_onIdle");
     return;
   }
   this->m_request = this->m_queue.front();
+  LOG_W(TAG, "m_request");
   this->m_queue.pop_front();
   LOG_D(TAG, "Getting and sending a request from the queue...");
   this->m_sendRequest(this->m_request);
+  LOG_W(TAG, "After sendRequest");
   if (this->m_request->onData != nullptr) {
+    LOG_W(TAG, "Case 1");
     this->m_resetAttempts();
+    LOG_W(TAG, "Case 1 m_resetAttempts");
     this->m_resetTimeout();
+    LOG_W(TAG, "Case 1 m_resetTimeout");
   } else {
+    LOG_W(TAG, "Case 2");
     this->m_destroyRequest();
+    LOG_W(TAG, "Case 2 m_destroyRequest");
   }
 }
 
