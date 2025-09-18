@@ -53,7 +53,7 @@ const char* Frame::toHexBuffer(char* buf, size_t buf_size) const {
       buf[pos++] = ' ';
     }
     if (pos > 0) pos--; // remove trailing space
-    buf[pos] = '\\0';
+    buf[pos] = '\0';
     return buf;
   }
   size_t pos = 0;
@@ -65,7 +65,7 @@ const char* Frame::toHexBuffer(char* buf, size_t buf_size) const {
     if (i + 1 != this->m_data.size())
       buf[pos++] = ' ';
   }
-  buf[pos] = '\\0';
+  buf[pos] = '\0';
   return buf;
 }
 
