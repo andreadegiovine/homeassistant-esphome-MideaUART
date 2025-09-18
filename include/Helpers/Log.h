@@ -72,6 +72,6 @@ void sv_log_printf_(int level, const char *tag, int line, const __FlashStringHel
 #define LOG_V(tag, ...) sv_log_v(tag, __VA_ARGS__)
 #define LOG_VV(tag, ...) sv_log_vv(tag, __VA_ARGS__)
 
-
-  bool isLoggerAvailable();
 }  // namespace dudanov
+
+namespace dudanov { namespace midea { bool isLoggerAvailable(); } }

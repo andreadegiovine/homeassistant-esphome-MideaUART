@@ -36,38 +36,5 @@ String Frame::toString() const {
   return ret;
 }
 
-
-const char* Frame::toHexBuffer(char* buf, size_t buf_size) const {
-  if (buf_size == 0) return nullptr;
-  // Each byte -> 2 hex chars + space; plus terminating null.
-  size_t needed = this->m_data.size() * 3 + 1;
-  if (buf_size < needed) {
-    // truncate if not enough space
-    size_t max_bytes = (buf_size - 1) / 3;
-    size_t pos = 0;
-    for (size_t i = 0; i < max_bytes; ++i) {
-      uint8_t v = this->m_data[i];
-      const char hex[] = "0123456789ABCDEF";
-      buf[pos++] = hex[(v >> 4) & 0xF];
-      buf[pos++] = hex[v & 0xF];
-      buf[pos++] = ' ';
-    }
-    if (pos > 0) pos--; // remove trailing space
-    buf[pos] = '\0';
-    return buf;
-  }
-  size_t pos = 0;
-  for (size_t i = 0; i < this->m_data.size(); ++i) {
-    uint8_t v = this->m_data[i];
-    const char hex[] = "0123456789ABCDEF";
-    buf[pos++] = hex[(v >> 4) & 0xF];
-    buf[pos++] = hex[v & 0xF];
-    if (i + 1 != this->m_data.size())
-      buf[pos++] = ' ';
-  }
-  buf[pos] = '\0';
-  return buf;
-}
-
 }  // namespace midea
 }  // namespace dudanov

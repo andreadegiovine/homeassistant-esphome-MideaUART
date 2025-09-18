@@ -25,7 +25,6 @@ class Frame {
   void setProtocol(uint8_t value) { this->m_data[OFFSET_PROTOCOL] = value; }
   uint8_t getProtocol() const { return this->m_data[OFFSET_PROTOCOL]; }
   String toString() const;
-  [[nodiscard]] const char* toHexBuffer(char* buf, size_t buf_size) const;
 
  protected:
   std::vector<uint8_t> m_data;

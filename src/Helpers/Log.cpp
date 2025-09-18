@@ -25,7 +25,6 @@ void sv_log_printf_(int level, const char *tag, int line, const __FlashStringHel
   va_end(arg);
 }
 
-
-bool isLoggerAvailable() { return logger_ != nullptr; }
-
 }  // namespace dudanov
+
+namespace dudanov { namespace midea { bool isLoggerAvailable() { return true; } } }
