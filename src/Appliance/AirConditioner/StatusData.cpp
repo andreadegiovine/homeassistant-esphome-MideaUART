@@ -1,4 +1,5 @@
 #include "Appliance/AirConditioner/StatusData.h"
+#include <Arduino.h>
 
 namespace dudanov {
 namespace midea {
@@ -102,7 +103,8 @@ float StatusData::getPowerUsage() const {
   uint32_t power = 0;
   const uint8_t *ptr = this->m_data.data() + 18;
   for (uint32_t weight = 1;; weight *= 100, --ptr) {
-    power += weight * bcd2u8(*ptr);
+  yield();
+power += weight * bcd2u8(*ptr);
     if (weight == 10000)
       return static_cast<float>(power) * 0.1F;
   }

@@ -4,6 +4,7 @@
 #include <WiFi.h>
 #else
 #include <ESP8266WiFi.h>
+#include <Arduino.h>
 #endif
 
 namespace dudanov {
@@ -12,6 +13,8 @@ namespace midea {
 static const char *TAG = "ApplianceBase";
 
 ResponseStatus ApplianceBase::Request::callHandler(const Frame &frame) {
+  yield();
+
   if (!frame.hasType(this->requestType))
     return ResponseStatus::RESPONSE_WRONG;
   if (this->onData == nullptr)
@@ -53,6 +56,8 @@ void ApplianceBase::setup() {
 }
 
 void ApplianceBase::loop() {
+  yield();
+
   // Timers task
   m_timerManager.task();
   // Loop for appliances
@@ -60,7 +65,9 @@ void ApplianceBase::loop() {
   // Frame receiving
   while (this->m_receiver.read(this->m_stream)) {
     this->m_protocol = this->m_receiver.getProtocol();
-    LOG_D(TAG, "RX2: %s", this->m_receiver.toString().c_str());
+if (dudanov::isLoggerAvailable()) {
+      LOG_D(TAG, "RX: %s", this->m_receiver.toString().c_str());
+}
     this->m_handler(this->m_receiver);
     this->m_receiver.clear();
   }
@@ -83,6 +90,8 @@ void ApplianceBase::loop() {
 }
 
 void ApplianceBase::m_handler(const Frame &frame) {
+  yield();
+
   if (this->m_isWaitForResponse()) {
     auto result = this->m_request->callHandler(frame);
     if (result != RESPONSE_WRONG) {
@@ -120,6 +129,8 @@ static uint8_t getSignalStrength() {
 }
 
 void ApplianceBase::m_sendNetworkNotify(FrameType msgType) {
+  yield();
+
   NetworkNotifyData notify{};
   notify.setConnected(WiFi.isConnected());
   notify.setSignalStrength(getSignalStrength());
@@ -158,8 +169,14 @@ void ApplianceBase::m_destroyRequest() {
 }
 
 void ApplianceBase::m_sendFrame(FrameType type, const FrameData &data) {
+  yield();
+
   Frame frame(this->m_appType, this->m_protocol, type, data);
-  LOG_D(TAG, "TX2: %s", frame.toString().c_str());
+if (dudanov::isLoggerAvailable()) {
+  char __hexbuf[256];
+  frame.toHexBuffer(__hexbuf, sizeof(__hexbuf));
+    LOG_D(TAG, "TX: %s", __hexbuf);
+}
   this->m_stream->write(frame.data(), frame.size());
   this->m_isBusy = true;
   this->m_periodTimer.setCallback([this](Timer *timer) {
@@ -180,7 +197,9 @@ void ApplianceBase::m_queueRequestPriority(FrameType type, FrameData data, Respo
 }
 
 void ApplianceBase::setBeeper(bool value) {
-  LOG_D(TAG, "Turning %s beeper feedback...", value ? "ON" : "OFF");
+if (dudanov::isLoggerAvailable()) {
+    LOG_D(TAG, "Turning %s beeper feedback...", value ? "ON" : "OFF");
+}
   this->m_beeper = value;
 }
 

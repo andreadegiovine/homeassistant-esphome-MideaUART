@@ -5,7 +5,7 @@
 
 namespace dudanov {
 
-using LoggerFn = std::function<void(int, const char *, int, String, va_list)>;
+using LoggerFn = std::function<void(int, const char *, int, String /* TODO: consider replacing with char[] to avoid fragmentation */, va_list)>;
 extern LoggerFn logger_;
 void setLogger(LoggerFn logger);
 

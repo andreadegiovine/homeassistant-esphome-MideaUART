@@ -24,7 +24,7 @@ class Frame {
   bool hasType(uint8_t value) const { return this->m_data[OFFSET_TYPE] == value; }
   void setProtocol(uint8_t value) { this->m_data[OFFSET_PROTOCOL] = value; }
   uint8_t getProtocol() const { return this->m_data[OFFSET_PROTOCOL]; }
-  String toString() const;
+  String /* TODO: consider replacing with char[] to avoid fragmentation */ toString() const;
 
  protected:
   std::vector<uint8_t> m_data;
