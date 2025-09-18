@@ -65,7 +65,7 @@ void ApplianceBase::loop() {
   // Frame receiving
   while (this->m_receiver.read(this->m_stream)) {
     this->m_protocol = this->m_receiver.getProtocol();
-if (dudanov::isLoggerAvailable()) {
+if (dudanov::midea::isLoggerAvailable()) {
       LOG_D(TAG, "RX: %s", this->m_receiver.toString().c_str());
 }
     this->m_handler(this->m_receiver);
@@ -172,7 +172,7 @@ void ApplianceBase::m_sendFrame(FrameType type, const FrameData &data) {
   yield();
 
   Frame frame(this->m_appType, this->m_protocol, type, data);
-if (dudanov::isLoggerAvailable()) {
+if (dudanov::midea::isLoggerAvailable()) {
   char __hexbuf[256];
   frame.toHexBuffer(__hexbuf, sizeof(__hexbuf));
     LOG_D(TAG, "TX: %s", __hexbuf);
@@ -197,7 +197,7 @@ void ApplianceBase::m_queueRequestPriority(FrameType type, FrameData data, Respo
 }
 
 void ApplianceBase::setBeeper(bool value) {
-if (dudanov::isLoggerAvailable()) {
+if (dudanov::midea::isLoggerAvailable()) {
     LOG_D(TAG, "Turning %s beeper feedback...", value ? "ON" : "OFF");
 }
   this->m_beeper = value;

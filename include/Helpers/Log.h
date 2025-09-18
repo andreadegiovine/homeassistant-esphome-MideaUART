@@ -1,3 +1,7 @@
+#ifndef MIDEA_NO_LOG
+#define MIDEA_NO_LOG 1
+#endif
+
 #pragma once
 #include <Arduino.h>
 

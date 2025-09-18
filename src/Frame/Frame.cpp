@@ -23,8 +23,8 @@ uint8_t Frame::m_calcCS() const {
 
 static char u4hex(uint8_t num) { return num + ((num < 10) ? '0' : ('A' - 10)); }
 
-String /* TODO: consider replacing with char[] to avoid fragmentation */ Frame::toString() const {
-  String /* TODO: consider replacing with char[] to avoid fragmentation */ ret;
+/*String*/ /* TODO: consider replacing with char[] to avoid fragmentation */ Frame::toString() const {
+  /*String*/ /* TODO: consider replacing with char[] to avoid fragmentation */ ret;
   char buf[4];
   buf[2] = ' ';
   buf[3] = '\0';
